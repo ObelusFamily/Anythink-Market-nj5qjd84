@@ -34,9 +34,10 @@ async def get_items_for_user_feed(
         user=user,
         limit=limit,
         offset=offset,
+        title=title,
     )
     items_for_response = [
-        ItemForResponse(**item.dict()) for item in items
+        ItemForResponse(**item.dict()) for item in items if item['title'].contains(title)
     ]
     return ListOfItemsInResponse(
         items=items_for_response,
