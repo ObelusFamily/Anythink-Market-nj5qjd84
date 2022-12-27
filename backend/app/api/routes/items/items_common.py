@@ -29,14 +29,17 @@ async def get_items_for_user_feed(
     offset: int = Query(DEFAULT_ITEMS_OFFSET, ge=0),
     user: User = Depends(get_current_user_authorizer()),
     items_repo: ItemsRepository = Depends(get_repository(ItemsRepository)),
+    query_title: str = None,
+    
 ) -> ListOfItemsInResponse:
     items = await items_repo.get_items_for_user_feed(
         user=user,
         limit=limit,
         offset=offset,
+        query_title = query_title,
     )
     items_for_response = [
-        ItemForResponse(**item.dict()) for item in items
+        ItemForResponse(**item.dict()) for item in items if item.title.contains(query_title)
     ]
     return ListOfItemsInResponse(
         items=items_for_response,
